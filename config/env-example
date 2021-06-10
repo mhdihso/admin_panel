@@ -1,0 +1,7 @@
+DEBUG=True
+SECRET_KEY=fn2+d)4t$m!+&xu)lj1=yh4m(gxn1p6p*ge$ny6rp&j#5kyt*a
+DATABASE_NAME=madtalkdb_admin
+DATABASE_USER=madtalk_admin
+DATABASE_PASS=dfyuasnm34RT
+HOST=127.0.0.1
+PORT=5432

@@ -6,7 +6,7 @@ keyhan.zip
 *.zip
 *.pyc
 core/migrations/
-.env
+config/.env
 *.env
 venv/
 settings.json
