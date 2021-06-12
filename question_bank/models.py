@@ -18,9 +18,14 @@ class Grade(models.Model):
     name = models.CharField(_("نام پایه "), max_length=100)
     field = models.ForeignKey(Field, on_delete=models.CASCADE , default = 'عمومی')
 
+class Course(models.Model):
+    name = models.CharField(_("نام درس"), max_length=100)
+    grade = models.ForeignKey(Grade,on_delete=models.CASCADE)
+
 class Lesson(models.Model):
-    name = models.CharField(_("نام درس"), max_length=150)
-    grade = models.ForeignKey(Grade, on_delete=models.CASCADE)
+    name = models.CharField(_("نام عبارت درسی"), max_length=150)
+    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+
 
 
 class Question(models.Model):
