@@ -44,7 +44,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     name = models.CharField(_("نام عبارت درسی"), max_length=150)
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
     def __str__(self):
         return self.name + ' - ' + str(self.course)
@@ -57,7 +57,7 @@ class Question(models.Model):
         TRUE_FALSE = 2
         BLANK_FILL = 3
 
-    id = models.CharField(default=uuid.uuid4 , max_length=500, blank=True, unique=True , primary_key=True)
+    id = models.CharField(default=uuid.uuid4, max_length=500, blank=True, unique=True , primary_key=True)
     text = models.TextField(_("متن سوال"))
     type = models.PositiveSmallIntegerField(_("نوع سوال"), choices=Types.choices, default=Types.DESCRIPTIVE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -70,7 +70,7 @@ class Question(models.Model):
     hardness = models.PositiveIntegerField(_("درجه سختی"), validators=[MinValueValidator(1), MaxValueValidator(10)])
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)    
     source_etc = models.CharField(_("منبع غیره"), max_length=150, null=True)
-    lesson = models.ManyToManyField(Lesson)
+    lessons = models.ManyToManyField(Lesson)
     number_of_uses = models.IntegerField(_("تعداد استفاده"), default=0)
     number_of_correct_answers = models.IntegerField(_("تعداد جواب درست"), default=0)
 

@@ -11,6 +11,7 @@ class ChoiceSerializer(serializers.ModelSerializer):
 
 class QuestionSerializer(serializers.ModelSerializer):
     type_obj = serializers.ReadOnlyField()
+    lessons = serializers.PrimaryKeyRelatedField(many=True, read_only=True)
     choices = ChoiceSerializer(many=True, read_only=True)
     choice = serializers.ListField(
         child=serializers.CharField(max_length=200), write_only=True, required=False
@@ -54,6 +55,7 @@ class FieldSerializer(serializers.ModelSerializer):
         fields = '__all__'
         ref_name = 'question_bank'
 
+
 class CategorySerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Category
@@ -82,5 +84,12 @@ class LessonSerializer(serializers.ModelSerializer):
 class CourseSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Course
+        fields = '__all__'
+        ref_name = 'question_bank'
+
+
+class SourceSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Source
         fields = '__all__'
         ref_name = 'question_bank'

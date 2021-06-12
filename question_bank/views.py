@@ -7,37 +7,40 @@ class QuestionList(generics.ListCreateAPIView):
     serializer_class = serializers.QuestionSerializer
 
     def get_queryset(self):
-        lesson_id = self.request.GET.get('lesson')
-        category_id = self.request.GET.get('category')
-        if lesson_id and category_id:
-            return models.LessonQuestion.objects.select_related('question').filter(question__category_id=category_id,
-                                                                                   lesson_id=lesson_id)
-        elif lesson_id:
-            return models.LessonQuestion.objects.filter(lesson_id=lesson_id).select_related('question')
-        elif category_id:
-            return models.Question.objects.filter(category_id=category_id)
-        else:
-            return models.Question.objects.all()
+        return models.Question.objects.all()
 
-    def list(self, request, *args, **kwargs):
-        lesson_id = self.request.GET.get('lesson')
-        category_id = self.request.GET.get('category')
-        questions = self.get_queryset()
-        page = self.paginate_queryset(questions)
-        object_list = []
-        if page is not None:
-            for q in page:
-                if (lesson_id and category_id) or lesson_id:
-                    serializer = self.get_serializer_class()
-                    serializer = serializer(q.question)
-                    data = serializer.data
-                else:
-                    serializer = self.get_serializer_class()
-                    serializer = serializer(q)
-                    data = serializer.data
-                object_list.append(data)
-            return self.get_paginated_response(object_list)
-        return response.Response(object_list, status=status.HTTP_200_OK)
+    # def get_queryset(self):
+    #     lesson_id = self.request.GET.get('lesson')
+    #     category_id = self.request.GET.get('category')
+    #     if lesson_id and category_id:
+    #         return models.LessonQuestion.objects.select_related('question').filter(question__category_id=category_id,
+    #                                                                                lesson_id=lesson_id)
+    #     elif lesson_id:
+    #         return models.LessonQuestion.objects.filter(lesson_id=lesson_id).select_related('question')
+    #     elif category_id:
+    #         return models.Question.objects.filter(category_id=category_id)
+    #     else:
+    #         return models.Question.objects.all()
+
+    # def list(self, request, *args, **kwargs):
+    #     lesson_id = self.request.GET.get('lesson')
+    #     category_id = self.request.GET.get('category')
+    #     questions = self.get_queryset()
+    #     page = self.paginate_queryset(questions)
+    #     object_list = []
+    #     if page is not None:
+    #         for q in page:
+    #             if (lesson_id and category_id) or lesson_id:
+    #                 serializer = self.get_serializer_class()
+    #                 serializer = serializer(q.question)
+    #                 data = serializer.data
+    #             else:
+    #                 serializer = self.get_serializer_class()
+    #                 serializer = serializer(q)
+    #                 data = serializer.data
+    #             object_list.append(data)
+    #         return self.get_paginated_response(object_list)
+    #     return response.Response(object_list, status=status.HTTP_200_OK)
 
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
@@ -145,3 +148,20 @@ class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return models.Course.objects.all()
+
+
+class SourceList(generics.ListCreateAPIView):
+    permission_classes = [perms.IsAuthenticated]
+    serializer_class = serializers.SourceSerializer
+
+    def get_queryset(self):
+        return models.Source.objects.all()
+
+
+class SourceDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [perms.IsAuthenticated]
+    serializer_class = serializers.SourceSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return models.Source.objects.all()
