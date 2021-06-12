@@ -4,28 +4,50 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 import uuid
 
+
 class Source(models.Model):
     name = models.CharField(_("نام منبع"), max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
     name = models.CharField(_("نام برچسب "), max_length=120)
 
+    def __str__(self):
+        return self.name
+
+
 class Field(models.Model):
     name = models.CharField(_("نام رشته"), max_length=100)
 
+    def __str__(self):
+        return self.name
+
+
 class Grade(models.Model):
     name = models.CharField(_("نام پایه "), max_length=100)
-    field = models.ForeignKey(Field, on_delete=models.CASCADE , default = 'عمومی')
+    field = models.ForeignKey(Field, on_delete=models.CASCADE , default='عمومی')
+
+    def __str__(self):
+        return self.name + ' - ' + str(self.field)
+
 
 class Course(models.Model):
     name = models.CharField(_("نام درس"), max_length=100)
     grade = models.ForeignKey(Grade,on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name + ' - ' + str(self.grade)
+
+
 class Lesson(models.Model):
     name = models.CharField(_("نام عبارت درسی"), max_length=150)
-    course = models.ForeignKey(Course,on_delete=models.CASCADE)
+    course = models.ForeignKey(Course, on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name + ' - ' + str(self.course)
 
 
 class Question(models.Model):
@@ -35,7 +57,7 @@ class Question(models.Model):
         TRUE_FALSE = 2
         BLANK_FILL = 3
 
-    id = models.CharField(default=uuid.uuid4 , max_length=500, blank=True, unique=True , primary_key=True)
+    id = models.CharField(default=uuid.uuid4, max_length=500, blank=True, unique=True , primary_key=True)
     text = models.TextField(_("متن سوال"))
     type = models.PositiveSmallIntegerField(_("نوع سوال"), choices=Types.choices, default=Types.DESCRIPTIVE)
     author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
@@ -48,7 +70,7 @@ class Question(models.Model):
     hardness = models.PositiveIntegerField(_("درجه سختی"), validators=[MinValueValidator(1), MaxValueValidator(10)])
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)    
     source_etc = models.CharField(_("منبع غیره"), max_length=150, null=True)
-    lesson = models.ManyToManyField(Lesson)
+    lessons = models.ManyToManyField(Lesson)
     number_of_uses = models.IntegerField(_("تعداد استفاده"), default=0)
     number_of_correct_answers = models.IntegerField(_("تعداد جواب درست"), default=0)
 
@@ -70,6 +92,7 @@ class Question(models.Model):
         else:
             return {'id': "3", 'name': "جای خالی"}
 
+<<<<<<< HEAD
     def save(self, *args, **kwargs):
         if self.type == 0:
             q = 'T'
@@ -81,6 +104,8 @@ class Question(models.Model):
             q = 'B'
         self.id =  q +  '-' +str(uuid.uuid4())[:8]+str(uuid.uuid4())[7:8]+str(uuid.uuid4())[12:13]
         super(Question, self).save(*args, **kwargs)
+=======
+>>>>>>> 9153ca91b913d79d18df3f59c2f85de949872e35
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
