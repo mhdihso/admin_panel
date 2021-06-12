@@ -24,7 +24,6 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # Quick-start development settings - unsuitable for production
 # See https://docs.djangoproject.com/en/3.1/howto/deployment/checklist/
 
-# SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = env('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
@@ -142,7 +141,15 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': [
         'rest_framework.authentication.TokenAuthentication',
-    ]
+    ],
+    'DEFAULT_PAGINATION_CLASS': 'classes.CustomPageNumberPagination',
+    'PAGE_SIZE': 30,
+    'DATETIME_FORMAT': '%Y/%m/%d %H:%M',
+    'DATETIME_INPUT_FORMATS': ['%Y/%m/%d %H:%M', '%Y-%m-%dT %H:%M'],
+    'DATE_FORMAT': '%Y/%m/%d',
+    'DATE_INPUT_FORMATS': ['%Y/%m/%d', '%Y-%m-%d'],
+    'TIME_FORMAT': '%H:%M',
+    'TIME_INPUT_FORMATS': ['%H:%M', ],
 }
 
 # Static files (CSS, JavaScript, Images)

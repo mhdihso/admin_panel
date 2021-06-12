@@ -70,6 +70,18 @@ class Question(models.Model):
         else:
             return {'id': "3", 'name': "جای خالی"}
 
+    def save(self, *args, **kwargs):
+        if self.type == 0:
+            q = 'T'
+        elif  self.type == 1:
+            q = 'M'
+        elif  self.type == 2 :
+            q = 'TF'
+        else:
+            q = 'B'
+        self.id =  q +  '-' +str(uuid.uuid4())[:8]+str(uuid.uuid4())[7:8]+str(uuid.uuid4())[12:13]
+        super(Question, self).save(*args, **kwargs)
+
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
     text = models.TextField(_("متن گزینه"))

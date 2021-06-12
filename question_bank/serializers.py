@@ -26,7 +26,7 @@ class QuestionSerializer(serializers.ModelSerializer):
         if 'choice' in validated_data:
             choices = validated_data.pop('choice')
         choice_answer_number = validated_data.get('choice_answer_id')
-        question = models.Question.objects.create(**validated_data)
+        question = super().create(validated_data)
         object_list = []
         if choices:
             for c in choices:

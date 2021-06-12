@@ -1,43 +1,29 @@
 from rest_framework import permissions as perms, response, status, generics
 from . import serializers, models
-
+from rest_framework import filters
+import random
+from django_filters.rest_framework import DjangoFilterBackend
 
 class QuestionList(generics.ListCreateAPIView):
     permission_classes = [perms.IsAuthenticated, ]
     serializer_class = serializers.QuestionSerializer
+    filter_backends = [filters.SearchFilter , filters.OrderingFilter , DjangoFilterBackend]
+    search_fields = ['^id']
+    ordering_fields = ['hardness']
+    filterset_fields = ["lesson__course__grade__field" , "lesson__course__grade" , "lesson" , "category" , "author"  , "hardness" , "type","lesson__course" ]
 
     def get_queryset(self):
-        lesson_id = self.request.GET.get('lesson')
-        category_id = self.request.GET.get('category')
-        if lesson_id and category_id:
-            return models.LessonQuestion.objects.select_related('question').filter(question__category_id=category_id,
-                                                                                   lesson_id=lesson_id)
-        elif lesson_id:
-            return models.LessonQuestion.objects.filter(lesson_id=lesson_id).select_related('question')
-        elif category_id:
-            return models.Question.objects.filter(category_id=category_id)
+        count = self.request.GET.get('count')
+        if count:
+            valid_qs_id_list = models.Question.objects.all().values_list('id', flat=True)
+            random_qs_id_list = random.sample(list(valid_qs_id_list), int(count))
+            queryset = models.Question.objects.filter(id__in = random_qs_id_list)
+            return queryset
+            
         else:
-            return models.Question.objects.all()
+            queryset = models.Question.objects.all()
+            return queryset
 
-    def list(self, request, *args, **kwargs):
-        lesson_id = self.request.GET.get('lesson')
-        category_id = self.request.GET.get('category')
-        questions = self.get_queryset()
-        page = self.paginate_queryset(questions)
-        object_list = []
-        if page is not None:
-            for q in page:
-                if (lesson_id and category_id) or lesson_id:
-                    serializer = self.get_serializer_class()
-                    serializer = serializer(q.question)
-                    data = serializer.data
-                else:
-                    serializer = self.get_serializer_class()
-                    serializer = serializer(q)
-                    data = serializer.data
-                object_list.append(data)
-            return self.get_paginated_response(object_list)
-        return response.Response(object_list, status=status.HTTP_200_OK)
 
 
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
