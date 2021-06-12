@@ -95,6 +95,7 @@ class CategoryDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return models.Category.objects.all()
 
+
 class GradeList(generics.ListCreateAPIView):
     permission_classes = [perms.IsAuthenticated]
     serializer_class = serializers.GradeSerializer
@@ -127,3 +128,20 @@ class LessonDetail(generics.RetrieveUpdateDestroyAPIView):
 
     def get_queryset(self):
         return models.Lesson.objects.all()
+
+
+class CourseList(generics.ListCreateAPIView):
+    permission_classes = [perms.IsAuthenticated]
+    serializer_class = serializers.CourseSerializer
+
+    def get_queryset(self):
+        return models.Course.objects.all()
+
+
+class CourseDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [perms.IsAuthenticated]
+    serializer_class = serializers.CourseSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return models.Course.objects.all()

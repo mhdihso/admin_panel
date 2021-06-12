@@ -77,3 +77,10 @@ class LessonSerializer(serializers.ModelSerializer):
         if len(object_list) > 0:
             models.LessonQuestion.objects.bulk_create(object_list)
         return {'question': question, 'lesson': lessons}
+
+
+class CourseSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Course
+        fields = '__all__'
+        ref_name = 'question_bank'

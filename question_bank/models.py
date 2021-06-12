@@ -4,28 +4,50 @@ from django.contrib.auth.models import User
 from django.utils.translation import ugettext_lazy as _
 import uuid
 
+
 class Source(models.Model):
     name = models.CharField(_("نام منبع"), max_length=100)
+
+    def __str__(self):
+        return self.name
 
 
 class Category(models.Model):
     name = models.CharField(_("نام برچسب "), max_length=120)
 
+    def __str__(self):
+        return self.name
+
+
 class Field(models.Model):
     name = models.CharField(_("نام رشته"), max_length=100)
 
+    def __str__(self):
+        return self.name
+
+
 class Grade(models.Model):
     name = models.CharField(_("نام پایه "), max_length=100)
-    field = models.ForeignKey(Field, on_delete=models.CASCADE , default = 'عمومی')
+    field = models.ForeignKey(Field, on_delete=models.CASCADE , default='عمومی')
+
+    def __str__(self):
+        return self.name + ' - ' + str(self.field)
+
 
 class Course(models.Model):
     name = models.CharField(_("نام درس"), max_length=100)
     grade = models.ForeignKey(Grade,on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name + ' - ' + str(self.grade)
+
+
 class Lesson(models.Model):
     name = models.CharField(_("نام عبارت درسی"), max_length=150)
     course = models.ForeignKey(Course,on_delete=models.CASCADE)
 
+    def __str__(self):
+        return self.name + ' - ' + str(self.course)
 
 
 class Question(models.Model):
@@ -69,6 +91,7 @@ class Question(models.Model):
             return {'id': "2", 'name': "درست یا غلط"}
         else:
             return {'id': "3", 'name': "جای خالی"}
+
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
