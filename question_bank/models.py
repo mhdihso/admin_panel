@@ -92,7 +92,6 @@ class Question(models.Model):
         else:
             return {'id': "3", 'name': "جای خالی"}
 
-<<<<<<< HEAD
     def save(self, *args, **kwargs):
         if self.type == 0:
             q = 'T'
@@ -104,8 +103,6 @@ class Question(models.Model):
             q = 'B'
         self.id =  q +  '-' +str(uuid.uuid4())[:8]+str(uuid.uuid4())[7:8]+str(uuid.uuid4())[12:13]
         super(Question, self).save(*args, **kwargs)
-=======
->>>>>>> 9153ca91b913d79d18df3f59c2f85de949872e35
 
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
