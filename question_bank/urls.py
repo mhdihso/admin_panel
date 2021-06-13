@@ -18,4 +18,6 @@ urlpatterns = [
     path('course/<int:id>/', views.CourseDetail.as_view()),
     path('source/', views.SourceList.as_view()),
     path('source/<int:id>/', views.SourceDetail.as_view()),
+    path('exam/', views.ExamList.as_view()),
+    path('exam/<int:id>/', views.ExamDetail.as_view()),
 ]

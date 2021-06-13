@@ -20,7 +20,6 @@ class QuestionSerializer(serializers.ModelSerializer):
     class Meta:
         model = models.Question
         fields = '__all__'
-        read_only_fields = ['number_of_uses', 'number_of_correct_answers']
 
     def create(self, validated_data):
         choices = None
@@ -38,7 +37,6 @@ class QuestionSerializer(serializers.ModelSerializer):
             choice = object_list[choice_answer_number - 1]
             question.choice_answer_id = choice.id
             question.save(update_fields=['choice_answer_id'])
-            
         return question
 
 
@@ -93,3 +91,8 @@ class SourceSerializer(serializers.ModelSerializer):
         model = models.Source
         fields = '__all__'
         ref_name = 'question_bank'
+
+class ExamSerialaizer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Exams
+        fields = '__all__'

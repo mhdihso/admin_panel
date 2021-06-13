@@ -69,10 +69,11 @@ class Question(models.Model):
     answer_image = models.TextField(_("تصویر جواب"), null=True, blank=True)
     hardness = models.PositiveIntegerField(_("درجه سختی"), validators=[MinValueValidator(1), MaxValueValidator(10)])
     source = models.ForeignKey(Source, on_delete=models.CASCADE, null=True)    
-    source_etc = models.CharField(_("منبع غیره"), max_length=150, null=True)
+    source_etc = models.CharField(_("منبع غیره"), max_length=150, null=True , blank=True)
     lessons = models.ManyToManyField(Lesson)
     number_of_uses = models.IntegerField(_("تعداد استفاده"), default=0)
     number_of_correct_answers = models.IntegerField(_("تعداد جواب درست"), default=0)
+    craete_at = models.DateTimeField(auto_now_add = True)
 
     @property
     def answer(self):
@@ -107,3 +108,7 @@ class Question(models.Model):
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
     text = models.TextField(_("متن گزینه"))
+
+class Exams(models.Model):
+    name = models.CharField(max_length=100)
+    questions = models.ManyToManyField(Question)
