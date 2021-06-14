@@ -44,7 +44,7 @@ class Course(models.Model):
 
 class Lesson(models.Model):
     name = models.CharField(_("نام عبارت درسی"), max_length=150)
-    course = models.ForeignKey(Course, on_delete=models.CASCADE)
+    course = models.ManyToManyField(Course)
 
     def __str__(self):
         return self.name + ' - ' + str(self.course)
