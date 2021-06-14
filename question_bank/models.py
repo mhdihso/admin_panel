@@ -73,7 +73,7 @@ class Question(models.Model):
     lessons = models.ManyToManyField(Lesson)
     number_of_uses = models.IntegerField(_("تعداد استفاده"), default=0)
     number_of_correct_answers = models.IntegerField(_("تعداد جواب درست"), default=0)
-    craete_at = models.DateTimeField(auto_now_add = True)
+    craete_at = models.DateField(auto_now_add = True)
 
     @property
     def answer(self):

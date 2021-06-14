@@ -1,3 +1,4 @@
+import datetime
 import random
 
 from django_filters.rest_framework import DjangoFilterBackend
@@ -50,6 +51,40 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
     def get_queryset(self):
         return models.Question.objects.all()
 
+class Question_AdminList(generics.ListCreateAPIView):
+    permission_classes = [perms.IsAuthenticated, permissions.QuestionAdminAccess]
+    serializer_class = serializers.QuestionAdminSerializer
+    search_fields = ['^id']
+    ordering_fields = ['hardness']
+    filter_backends = [DjangoFilterBackend]
+    filter_class = QuestionFilterSet
+
+    def get_queryset(self):
+        from_date = self.request.GET.get('from_date')
+        to_date = self.request.GET.get('to_date')
+        user_id = self.kwargs['user_id']
+        if from_date and to_date:
+            try:
+                start_date = datetime.datetime.strptime(from_date, '%Y/%m/%d').strftime('%Y-%m-%d')
+                end_date = datetime.datetime.strptime(to_date, '%Y/%m/%d').strftime('%Y-%m-%d')
+                list_date = []
+                list_date.append(start_date)
+                list_date.append(end_date)
+            except:
+                return models.Question.objects.filter(author__id = user_id)
+            return models.Question.objects.filter(author__id = user_id, craete_at__range=list_date)
+        else :
+            
+            return models.Question.objects.filter(author__id = user_id)
+
+
+class Question_AdminDetail(generics.RetrieveUpdateDestroyAPIView):
+    permission_classes = [perms.IsAuthenticated , permissions.QuestionAdminAccess]
+    serializer_class = serializers.QuestionAdminSerializer
+    lookup_field = 'id'
+
+    def get_queryset(self):
+        return models.Question.objects.all()
 
 class ChoiceCreate(generics.CreateAPIView):
     permission_classes = (perms.IsAuthenticated)

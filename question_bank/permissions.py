@@ -17,3 +17,14 @@ class QuestionAccess(permissions.BasePermission):
             return True
         else:
             return False
+
+class QuestionAdminAccess(permissions.BasePermission):
+
+    message = _('اجازه دسترسي ندارید')
+
+    def has_permission(self, request, view):
+        user = request.user
+        if user.type == models.User.Types.ADMIN:
+            return True
+        else:
+            return False

@@ -91,3 +91,8 @@ class SourceSerializer(serializers.ModelSerializer):
         model = models.Source
         fields = '__all__'
         ref_name = 'question_bank'
+
+class QuestionAdminSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = models.Question
+        fields = '__all__'

@@ -4,6 +4,8 @@ from . import views
 urlpatterns = [
     path('question/', views.QuestionList.as_view()),
     path('question/<str:id>/', views.QuestionDetail.as_view()),
+    path('question-admin/<int:user_id>/', views.Question_AdminList.as_view()),
+    path('question-admin/<str:id>/<int:user_id>/', views.Question_AdminDetail.as_view()),
     path('choice/', views.ChoiceCreate.as_view()),
     path('choice/<int:id>/', views.ChoiceDetail.as_view()),
     path('grade/', views.GradeList.as_view()),
@@ -17,5 +19,5 @@ urlpatterns = [
     path('course/', views.CourseList.as_view()),
     path('course/<int:id>/', views.CourseDetail.as_view()),
     path('source/', views.SourceList.as_view()),
-    path('source/<int:id>/', views.SourceDetail.as_view())
+    path('source/<int:id>/', views.SourceDetail.as_view()),  
 ]
