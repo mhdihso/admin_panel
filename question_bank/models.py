@@ -1,6 +1,6 @@
 from django.db import models
 from django.core.validators import MaxValueValidator, MinValueValidator
-from django.contrib.auth.models import User
+from django.contrib.auth import get_user_model
 from django.utils.translation import ugettext_lazy as _
 import uuid
 
@@ -60,7 +60,7 @@ class Question(models.Model):
     id = models.CharField(default=uuid.uuid4, max_length=500, blank=True, unique=True , primary_key=True)
     text = models.TextField(_("متن سوال"))
     type = models.PositiveSmallIntegerField(_("نوع سوال"), choices=Types.choices, default=Types.DESCRIPTIVE)
-    author = models.ForeignKey(User, on_delete=models.CASCADE, null=True, blank=True)
+    author = models.ForeignKey(get_user_model(), on_delete=models.CASCADE, null=True, blank=True)
     category = models.ForeignKey(Category, on_delete=models.SET_NULL, null=True, blank=True)
     choice_answer_id = models.PositiveIntegerField(null=True, blank=True)
     text_answer = models.TextField(_("متن جواب"), null=True, blank=True)
@@ -108,7 +108,3 @@ class Question(models.Model):
 class Choice(models.Model):
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='choices')
     text = models.TextField(_("متن گزینه"))
-
-class Exams(models.Model):
-    name = models.CharField(max_length=100)
-    questions = models.ManyToManyField(Question)

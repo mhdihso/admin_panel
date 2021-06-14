@@ -32,6 +32,7 @@ DEBUG = env('DEBUG')
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
 
+AUTH_USER_MODEL = 'account.User'
 
 # Application definition
 
@@ -47,6 +48,7 @@ INSTALLED_APPS = [
     'rest_framework.authtoken',
     'drf_yasg',
     'question_bank',
+    'account',
     'django_filters',
     ]
 
@@ -95,6 +97,8 @@ DATABASES = {
         'PORT': env('PORT'),
     }
 }
+
+
 
 
 # Password validation

@@ -1,50 +1,49 @@
-from rest_framework import permissions as perms, response, status, generics
-from . import serializers, models
-from rest_framework import filters 
 import random
+
 from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, generics
+from rest_framework import permissions as perms
+from rest_framework import response, status
+from rest_framework.response import Response
+
+from . import models, permissions, serializers
 from .filters import *
 
-class ExamList(generics.ListCreateAPIView):
-    permission_classes = [perms.IsAuthenticated]
-    serializer_class = serializers.ExamSerialaizer
-    lookup_field = 'id'
-
-    def get_queryset(self):
-        return models.Choice.objects.all()
-
-class ExamDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [perms.IsAuthenticated]
-    serializer_class = serializers.ExamSerialaizer
-    lookup_field = 'id'
-
-    def get_queryset(self):
-        return models.Choice.objects.all()
 
 class QuestionList(generics.ListCreateAPIView):
-    permission_classes = [perms.IsAuthenticated, ]
+    permission_classes = [perms.IsAuthenticated, permissions.QuestionAccess]
     serializer_class = serializers.QuestionSerializer
     filter_backends = [filters.SearchFilter , filters.OrderingFilter , DjangoFilterBackend]
     search_fields = ['^id']
     ordering_fields = ['hardness']
     filter_class = QuestionFilterSet
 
+    def create(self, request, *args, **kwargs):
+        question_data = request.data
+        current_user = request.user
+        question_data["author"] = current_user.id
+        serializer = self.get_serializer(data=question_data)
+        serializer.is_valid(raise_exception=True)
+        self.perform_create(serializer)
+        headers = self.get_success_headers(serializer.data)
+        return Response(serializer.data, status=status.HTTP_201_CREATED, headers=headers)
+
     def get_queryset(self):
 
         count = self.request.GET.get('count')
         if count:
-            valid_qs_id_list = models.Question.objects.all().values_list('id', flat=True)
+            valid_qs_id_list = models.Question.objects.filter(author = self.request.user).values_list('id', flat=True)
             random_qs_id_list = random.sample(list(valid_qs_id_list), int(count))
             queryset = models.Question.objects.filter(id__in = random_qs_id_list)
             return queryset
             
         else:
-            queryset = models.Question.objects.all()
+            queryset = models.Question.objects.filter(author = self.request.user)
             return queryset
         
             
 class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
-    permission_classes = [perms.IsAuthenticated]
+    permission_classes = [perms.IsAuthenticated, permissions.QuestionAccess]
     serializer_class = serializers.QuestionSerializer
     lookup_field = 'id'
 
@@ -53,7 +52,7 @@ class QuestionDetail(generics.RetrieveUpdateDestroyAPIView):
 
 
 class ChoiceCreate(generics.CreateAPIView):
-    permission_classes = (perms.IsAuthenticated,)
+    permission_classes = (perms.IsAuthenticated)
     serializer_class = serializers.ChoiceSerializer
 
 
